@@ -1,6 +1,7 @@
 *Universidad de San Carlos de Guatemala*  
-*Escuela de Ingeniería en Ciencias y Sistemas, Facultad de Ingenieria*  
-*Sistema Operativos 2, Junio 2024.*  
+*Facultad de Ingenieria*  
+*Escuela de Ciencias y Sistemas*  
+*Seminario De Sistemas 2, Segundo Semestre 2024.*  
 
 ___
 ## **Practica 1**
