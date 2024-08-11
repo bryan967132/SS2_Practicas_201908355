@@ -1,3 +1,4 @@
+from Options.Colors import Colors
 from Options.Connection import Connection
 
 class Delete:
@@ -13,27 +14,27 @@ class Delete:
             rows[i] = rows[i][0]
 
         message = ''
-        if 'Flight' in rows:
-            message += 'Tabla Flight No Existe'
-        if 'Passenger' in rows:
-            message += '\nTabla Passenger No Existe'
-        if 'Airport' in rows:
-            message += '\nTabla Airport No Existe'
-        if 'Country' in rows:
-            message += '\nTabla Country No Existe'
-        if 'Continent' in rows:
-            message += '\nTabla Continent No Existe'
-        if 'Pilot' in rows:
-            message += '\nTabla Pilot No Existe'
-        if 'Status' in rows:
-            message += '\nTabla Status No Existe'
+        if not 'Flight' in rows:
+            message += '  Tabla Flight No Existe'
+        if not 'Passenger' in rows:
+            message += '\n  Tabla Passenger No Existe'
+        if not 'Airport' in rows:
+            message += '\n  Tabla Airport No Existe'
+        if not 'Country' in rows:
+            message += '\n  Tabla Country No Existe'
+        if not 'Continent' in rows:
+            message += '\n  Tabla Continent No Existe'
+        if not 'Pilot' in rows:
+            message += '\n  Tabla Pilot No Existe'
+        if not 'Status' in rows:
+            message += '\n  Tabla Status No Existe'
 
-        print('Eliminación de Modelo')
-        if message != '':
+        print('  Eliminación de Modelo')
+        if message == '':
             cursor.execute(open('./Scripts/DeleteModel.sql', encoding = 'utf-8').read())
             cursor.commit()
-            print(f'\033[32mTabla Flight Eliminada\nTabla Passenger Eliminada\nTabla Airport Eliminada\nTabla Country Eliminada\nTabla Continent Eliminada\nTabla Pilot Eliminada\nTabla Status Eliminada\n\033[0m')
+            print(f'{Colors.GREEN.value}  Tabla Flight Eliminada\n  Tabla Passenger Eliminada\n  Tabla Airport Eliminada\n  Tabla Country Eliminada\n  Tabla Continent Eliminada\n  Tabla Pilot Eliminada\n  Tabla Status Eliminada\n{Colors.WHITE.value}')
         else:
-            print(f'\033[31m{message}\033[0m')
+            print(f'{Colors.RED.value}{message}{Colors.WHITE.value}')
 
         self.connection.close()
