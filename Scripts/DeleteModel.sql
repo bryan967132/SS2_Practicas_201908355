@@ -1,0 +1,7 @@
+DROP TABLE Flight;
+DROP TABLE Passenger;
+DROP TABLE Airport;
+DROP TABLE Country;
+DROP TABLE Continent;
+DROP TABLE Pilot;
+DROP TABLE Status;
