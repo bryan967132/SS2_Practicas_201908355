@@ -1,11 +1,21 @@
 import pyodbc
+from dotenv import load_dotenv
+import os
 
-# Configura los parámetros de conexión con autenticación integrada
+load_dotenv()
+
 conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=localhost;'
-    'DATABASE=Practica1;'
-    'Trusted_Connection=yes;'
+    "Driver={ODBC Driver 17 for SQL Server};"
+    f"Server={os.getenv('DBHOST')};"
+    f"Database={os.getenv('DBNAME')};"
+    "Trusted_Connection=yes;"
 )
 
 cursor = conn.cursor()
+
+cursor.execute("SELECT 'HOLA MUNDO' saludo;")
+rows = cursor.fetchall()
+print(rows)
+
+cursor.close()
+conn.close()
