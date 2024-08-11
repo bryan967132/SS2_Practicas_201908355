@@ -1,3 +1,4 @@
+from Options.Colors import Colors
 from Options.Connection import Connection
 
 class Create:
@@ -14,26 +15,26 @@ class Create:
 
         message = ''
         if 'Flight' in rows:
-            message += 'Tabla Flight Ya Existe'
+            message += '  Tabla Flight Ya Existe'
         if 'Passenger' in rows:
-            message += '\nTabla Passenger Ya Existe'
+            message += '\n  Tabla Passenger Ya Existe'
         if 'Airport' in rows:
-            message += '\nTabla Airport Ya Existe'
+            message += '\n  Tabla Airport Ya Existe'
         if 'Country' in rows:
-            message += '\nTabla Country Ya Existe'
+            message += '\n  Tabla Country Ya Existe'
         if 'Continent' in rows:
-            message += '\nTabla Continent Ya Existe'
+            message += '\n  Tabla Continent Ya Existe'
         if 'Pilot' in rows:
-            message += '\nTabla Pilot Ya Existe'
+            message += '\n  Tabla Pilot Ya Existe'
         if 'Status' in rows:
-            message += '\nTabla Status Ya Existe'
+            message += '\n  Tabla Status Ya Existe'
 
-        print('Creación de Modelo')
+        print('  Creación de Modelo')
         if message == '':
             cursor.execute(open('./Scripts/LoadModel.sql', encoding = 'utf-8').read())
             cursor.commit()
-            print(f'\033[32mTabla Flight Creada\nTabla Passenger Creada\nTabla Airport Creada\nTabla Country Creada\nTabla Continent Creada\nTabla Pilot Creada\nTabla Status Creada\n\033[0m')
+            print(f'{Colors.GREEN.value}  Tabla Flight Creada\n  Tabla Passenger Creada\n  Tabla Airport Creada\n  Tabla Country Creada\n  Tabla Continent Creada\n  Tabla Pilot Creada\n  Tabla Status Creada\n  {Colors.WHITE.value}')
         else:
-            print(f'\033[31m{message}\033[0m')
+            print(f'{Colors.RED.value}{message}{Colors.WHITE.value}')
 
         self.connection.close()
