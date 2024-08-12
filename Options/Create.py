@@ -15,7 +15,7 @@ class Create:
 
         message = ''
         if 'Flight' in rows:
-            message += '  Tabla Flight Ya Existe'
+            message += '\n  Tabla Flight Ya Existe'
         if 'Passenger' in rows:
             message += '\n  Tabla Passenger Ya Existe'
         if 'Airport' in rows:
@@ -29,12 +29,13 @@ class Create:
         if 'Status' in rows:
             message += '\n  Tabla Status Ya Existe'
 
-        print('  Creación de Modelo')
         if message == '':
             cursor.execute(open('./Scripts/LoadModel.sql', encoding = 'utf-8').read())
             cursor.commit()
-            print(f'{Colors.GREEN.value}  Tabla Flight Creada\n  Tabla Passenger Creada\n  Tabla Airport Creada\n  Tabla Country Creada\n  Tabla Continent Creada\n  Tabla Pilot Creada\n  Tabla Status Creada\n  {Colors.WHITE.value}')
+            message = f'{Colors.GREEN.value}\n  Tabla Flight Creada\n  Tabla Passenger Creada\n  Tabla Airport Creada\n  Tabla Country Creada\n  Tabla Continent Creada\n  Tabla Pilot Creada\n  Tabla Status Creada{Colors.WHITE.value}'
         else:
-            print(f'{Colors.RED.value}{message}{Colors.WHITE.value}')
+            message = f'{Colors.RED.value}{message}{Colors.WHITE.value}'
 
         self.connection.close()
+
+        return '\n  Creación de Modelo' +  message
