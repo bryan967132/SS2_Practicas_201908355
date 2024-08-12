@@ -2,6 +2,9 @@ from Options.Colors import Colors
 from Options.Connection import Connection
 from Options.Create import Create
 from Options.Delete import Delete
+from Options.Extract import Extract
+from Options.Load import Load
+from Options.Querys import Querys
 import platform
 import os
 
@@ -48,13 +51,16 @@ class Menu:
 
 class Practica1:
     def __init__(self):
+        self.data = []
         self.menu = Menu()
         self.conn = Connection()
         self.create = Create(self.conn)
         self.delete = Delete(self.conn)
+        self.extract = Extract(self.conn)
+        self.load = Load(self.conn)
+        self.querys = Querys(self.conn)
 
     def run(self):
-        self.menu.clearConsole()
         option = 0
         while(option != 6):
             option = self.menu.chooseOption()
@@ -66,13 +72,20 @@ class Practica1:
                     print()
                     self.menu.message = self.create.start()
                 case 3:
-                    pass
+                    print()
+                    # self.menu.message = self.extract.start(input('  Ruta del Archivo con Información: '))
+                    self.menu.message = self.extract.start('C:/Users/bryan/Documents/USAC/Semi2/Lab/Practica1/Data/VuelosDataSet.csv')
                 case 4:
-                    pass
+                    print()
+                    self.menu.message = self.load.start()
                 case 5:
-                    pass
+                    print()
+                    self.menu.message = self.querys.start()
+                    if self.menu.message['status'] == 1:
+                        data = self.menu.message['data']
+                        print(data)
+                    self.menu.message = self.menu.message['response']
                 case _:
-                    pass
-        print(f'  {Colors.GREEN.value}¡Finalizado!{Colors.WHITE.value}')
+                    print(f'  {Colors.GREEN.value}¡Finalizado!{Colors.WHITE.value}')
 
 Practica1().run()
