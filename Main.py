@@ -1,75 +1,78 @@
-import pyodbc
-from dotenv import load_dotenv
+from Options.Colors import Colors
+from Options.Connection import Connection
+from Options.Create import Create
+from Options.Delete import Delete
+import platform
 import os
 
-load_dotenv()
+class Menu:
+    def __init__(self) -> None:
+        self.message = ''
 
-conn = pyodbc.connect(
-    "Driver={ODBC Driver 17 for SQL Server};"
-    f"Server={os.getenv('DBHOST')};"
-    f"Database={os.getenv('DBNAME')};"
-    "Trusted_Connection=yes;"
-)
+    def options(self):
+        self.clearConsole()
+        print(f'{Colors.GRAY.value}╔══════════════════════════════════════╗')
+        print(f'║ {Colors.WHITE.value}Practica 1 - Seminario De Sistemas 2 {Colors.GRAY.value}║')
+        print(f'╠══════════════════════════════════════╣')
+        print(f'║            {Colors.WHITE.value}Menu Principal            {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}1. Borrar Modelo              {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}2. Crear Modelo               {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}3. Extraer Información        {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}4. Cargar Información         {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}5. Consultas                  {Colors.GRAY.value}║')
+        print(f'║        {Colors.WHITE.value}6. Salir                      {Colors.GRAY.value}║')
+        print(f'╚══════════════════════════════════════╝{Colors.WHITE.value}')
+        if self.message != '':
+            print(self.message)
+            self.message = ''
 
-cursor = conn.cursor()
+    def readInputKey(self) -> int:
+        option = input('\n  Opcion: ')
+        if option.isdigit():
+            if 1 <= int(option) <= 6:
+                return int(option)
+            self.message = f'{Colors.RED.value}  Solo se permiten números [1-6]{Colors.WHITE.value}'
+            return 0
+        self.message = f'{Colors.RED.value}  Solo se permiten números{Colors.WHITE.value}'
+        return 0
 
-cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';")
-rows = cursor.fetchall()
-for i in range(len(rows)):
-    rows[i] = rows[i][0]
+    def chooseOption(self):
+        self.options()
+        return self.readInputKey()
 
-message = ''
-if 'Flight' in rows:
-    message += 'Tabla Flight Ya Existe'
-if 'Passenger' in rows:
-    message += '\nTabla Passenger Ya Existe'
-if 'Airport' in rows:
-    message += '\nTabla Airport Ya Existe'
-if 'Country' in rows:
-    message += '\nTabla Country Ya Existe'
-if 'Continent' in rows:
-    message += '\nTabla Continent Ya Existe'
-if 'Pilot' in rows:
-    message += '\nTabla Pilot Ya Existe'
-if 'Status' in rows:
-    message += '\nTabla Status Ya Existe'
+    def clearConsole(self):
+        if platform.system() == 'Windows':
+            os.system('cls')
+        else:
+            os.system('clear')
 
-print('Creación de Modelo')
-if message == '':
-    cursor.execute(open('./Scripts/LoadModel.sql', encoding = 'utf-8').read())
-    cursor.commit()
-    print(f'\033[32mTabla Flight Creada\nTabla Passenger Creada\nTabla Airport Creada\nTabla Country Creada\nTabla Continent Creada\nTabla Pilot Creada\nTabla Status Creada\n\033[0m')
-else:
-    print(f'\033[31m{message}\033[0m')
+class Practica1:
+    def __init__(self):
+        self.menu = Menu()
+        self.conn = Connection()
+        self.create = Create(self.conn)
+        self.delete = Delete(self.conn)
 
-cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';")
-rows = cursor.fetchall()
-for i in range(len(rows)):
-    rows[i] = rows[i][0]
+    def run(self):
+        self.menu.clearConsole()
+        option = 0
+        while(option != 6):
+            option = self.menu.chooseOption()
+            match option:
+                case 1:
+                    print()
+                    self.menu.message = self.delete.start()
+                case 2:
+                    print()
+                    self.menu.message = self.create.start()
+                case 3:
+                    pass
+                case 4:
+                    pass
+                case 5:
+                    pass
+                case _:
+                    pass
+        print(f'  {Colors.GREEN.value}¡Finalizado!{Colors.WHITE.value}')
 
-message = ''
-if 'Flight' in rows:
-    message += 'Tabla Flight No Existe'
-if 'Passenger' in rows:
-    message += '\nTabla Passenger No Existe'
-if 'Airport' in rows:
-    message += '\nTabla Airport No Existe'
-if 'Country' in rows:
-    message += '\nTabla Country No Existe'
-if 'Continent' in rows:
-    message += '\nTabla Continent No Existe'
-if 'Pilot' in rows:
-    message += '\nTabla Pilot No Existe'
-if 'Status' in rows:
-    message += '\nTabla Status No Existe'
-
-print('Eliminación de Modelo')
-if message != '':
-    cursor.execute(open('./Scripts/DeleteModel.sql', encoding = 'utf-8').read())
-    cursor.commit()
-    print(f'\033[32mTabla Flight Eliminada\nTabla Passenger Eliminada\nTabla Airport Eliminada\nTabla Country Eliminada\nTabla Continent Eliminada\nTabla Pilot Eliminada\nTabla Status Eliminada\n\033[0m')
-else:
-    print(f'\033[31m{message}\033[0m')
-
-cursor.close()
-conn.close()
+Practica1().run()
