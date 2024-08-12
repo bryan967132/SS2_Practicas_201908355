@@ -1,34 +1,44 @@
 -- 1. SELECT COUNT(*) de todas las tablas para ver que si realizo la carga en las tablas del modelo
-SELECT 'Status' AS TableName, COUNT(*) AS TotalRecords FROM Status
+SELECT 1, 'Status' AS TableName, COUNT(*) AS TotalRecords FROM Status
 UNION ALL
-SELECT 'Pilot', COUNT(*) FROM Pilot
+SELECT 2, 'Pilot', COUNT(*) FROM Pilot
 UNION ALL
-SELECT 'Continent', COUNT(*) FROM Continent
+SELECT 3, 'Continent', COUNT(*) FROM Continent
 UNION ALL
-SELECT 'Country', COUNT(*) FROM Country
+SELECT 4, 'Country', COUNT(*) FROM Country
 UNION ALL
-SELECT 'Airport', COUNT(*) FROM Airport
+SELECT 5, 'Airport', COUNT(*) FROM Airport
 UNION ALL
-SELECT 'Passenger', COUNT(*) FROM Passenger
+SELECT 6, 'Passenger', COUNT(*) FROM Passenger
 UNION ALL
-SELECT 'Flight', COUNT(*) FROM Flight;
+SELECT 7, 'Flight', COUNT(*) FROM Flight;
 -- --
 -- 2. Porcentaje de pasajeros por género
 SELECT
     gender Gender,
-    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Passenger) Percentage
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Passenger), 2) Percentage
 FROM Passenger
 GROUP BY gender;
 -- --
 -- 3. Nacionalidades con su mes año de mayor fecha de salida
+WITH RankedFlights AS (
+    SELECT
+        ROW_NUMBER() OVER (PARTITION BY nationality ORDER BY COUNT(*) DESC) AS rn,
+        nationality AS Nationality,
+        FORMAT(departuredate, 'MM-yyyy') AS [Month-Year],
+        COUNT(*) AS Flights
+    FROM Flight f
+    JOIN Passenger p ON f.passenger_id = p.id
+    GROUP BY nationality, FORMAT(departuredate, 'MM-yyyy')
+)
 SELECT
-    nationality Nationality,
-    FORMAT(departuredate, 'MM-yyyy') 'Month-Year',
-    COUNT(*) Flights
-FROM Flight f
-JOIN Passenger p ON f.passenger_id = p.id
-GROUP BY nationality, FORMAT(departuredate, 'MM-yyyy')
-ORDER BY nationality, 'Month-Year';
+	ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) 'Top',
+    Nationality,
+    [Month-Year],
+    Flights
+FROM RankedFlights
+WHERE rn = 1
+ORDER BY Nationality;
 -- --
 -- 4. Count de vuelos por país
 SELECT
@@ -41,6 +51,7 @@ GROUP BY c.name;
 -- --
 -- 5. Top 5 aeropuertos con mayor número de pasajeros
 SELECT TOP 5
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) 'Top',
     a.name Airport,
     COUNT(*) Passengers
 FROM Flight f
@@ -58,6 +69,7 @@ GROUP BY s.name;
 -- --
 -- 7. Top 5 de los países más visitados
 SELECT TOP 5
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) 'Top',
     c.name Country,
     COUNT(*) Flights
 FROM Flight f
@@ -68,6 +80,7 @@ ORDER BY Flights DESC;
 -- --
 -- 8. Top 5 de los continentes más visitados
 SELECT TOP 5
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) 'Top',
     con.name Continent,
     COUNT(*) Flights
 FROM Flight f
@@ -79,6 +92,7 @@ ORDER BY Flights DESC;
 -- --
 -- 9. Top 5 de edades divido por género que más viajan
 SELECT TOP 5
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) 'Top',
     age Age,
     gender Gender,
     COUNT(*) Passengers

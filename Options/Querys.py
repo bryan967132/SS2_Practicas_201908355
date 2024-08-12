@@ -1,9 +1,17 @@
 from Options.Colors import Colors
 from Options.Connection import Connection
+from prettytable import PrettyTable
 
 class Querys:
     def __init__(self, connection: Connection):
         self.connection: Connection = connection
+
+    def writeReport(self, title, headers, data) -> str:
+        table = PrettyTable()
+        table.field_names = headers
+        for d in data:
+            table.add_row(d)
+        return f'{title}\n{table.__str__()}'
 
     def start(self):
         cursor = self.connection.start()
@@ -18,59 +26,39 @@ class Querys:
             isLoaded = False
 
         data = {}
-        c = 0
+        c = 1
         if isLoaded:
             report = ''
             for q in open('./Scripts/Querys.sql', encoding = 'utf-8').read().split('-- --'):
                 cursor.execute(q)
                 rows = cursor.fetchall()
-                if c == 0:
-                    report += 'Reporte1'
-                    for r in rows:
-                        report += f'{r}\n'
-                elif c == 1:
-                    report += '\nReporte2'
-                    for r in rows:
-                        report += f'{r}\n'
+                if c == 1:
+                    report += self.writeReport('1. Count De Todas Las Tablas', ['No', 'Table', 'Count'], rows)
                 elif c == 2:
-                    report += '\nReporte3'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n2. Porcentaje De Pasajeros Por Género', ['Gender', 'Percentaje'], rows)
                 elif c == 3:
-                    report += '\nReporte4'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n3. Nacionalidades Con Su Mes-Año De Mayor Fecha De Salida', ['No', 'Nationality', 'Month-Year', 'Flights'], rows)
                 elif c == 4:
-                    report += '\nReporte5'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n4. Count De Vuelos Por País', ['Country', 'Flights'], rows)
                 elif c == 5:
-                    report += '\nReporte6'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n5. Top 5 Aeropuertos Con Mayor Número De Pasajeros', ['Top', 'Airport', 'Passengers'], rows)
                 elif c == 6:
-                    report += '\nReporte7'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n6. Count Divido Por Estado De Vuelo', ['Status', 'Flights'], rows)
                 elif c == 7:
-                    report += '\nReporte8'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n7. Top 5 De Los Países Más Visitados', ['Top', 'Country', 'Flights'], rows)
                 elif c == 8:
-                    report += '\nReporte9'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n8. Top 5 De Los Continentes Más Visitados', ['Top', 'Continent', 'Flights'], rows)
                 elif c == 9:
-                    report += '\nReporte10'
-                    for r in rows:
-                        report += f'{r}\n'
+                    report += self.writeReport('\n\n9. Top 5 De Edades Divido Por Género Que Más Viajan', ['Top', 'Age', 'Gender', 'Flights'], rows)
+                elif c == 10:
+                    report += self.writeReport('\n\n10. Count de vuelos por MM-YYYY', ['Month-Year', 'Flights'], rows)
                 c += 1
 
-            with open('./Reportes.txt', 'w', encoding = 'utf-8') as file:
+            with open('./Reports/Report.txt', 'w', encoding = 'utf-8') as file:
                 file.write(report)
 
             self.connection.close()
-            return {'status': 1,'response': f'\n  Consultas\n{Colors.GREEN.value}  ¡Consultas Completadas!{Colors.WHITE.value}', 'data': data}
+            return f'\n  Consultas\n{Colors.GREEN.value}  ¡Consultas Completadas!{Colors.WHITE.value}'
         else:
             self.connection.close()
-            return {'status': 0,'response': f'\n  Consultas\n{Colors.RED.value}  ¡No hay un modelo cargado!{Colors.WHITE.value}'}
+            return f'\n  Consultas\n{Colors.RED.value}  ¡No hay un modelo cargado!{Colors.WHITE.value}'

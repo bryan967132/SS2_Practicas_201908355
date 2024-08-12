@@ -73,18 +73,14 @@ class Practica1:
                     self.menu.message = self.create.start()
                 case 3:
                     print()
-                    # self.menu.message = self.extract.start(input('  Ruta del Archivo con Información: '))
-                    self.menu.message = self.extract.start('C:/Users/bryan/Documents/USAC/Semi2/Lab/Practica1/Data/VuelosDataSet.csv')
+                    self.menu.message = self.extract.start(input('  Ruta del Archivo con Información: '))
+                    # self.menu.message = self.extract.start('C:/Users/bryan/Documents/USAC/Semi2/Lab/Practica1/Data/VuelosDataSet.csv')
                 case 4:
                     print()
                     self.menu.message = self.load.start()
                 case 5:
                     print()
                     self.menu.message = self.querys.start()
-                    if self.menu.message['status'] == 1:
-                        data = self.menu.message['data']
-                        print(data)
-                    self.menu.message = self.menu.message['response']
                 case _:
                     print(f'  {Colors.GREEN.value}¡Finalizado!{Colors.WHITE.value}')
 

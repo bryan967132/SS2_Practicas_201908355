@@ -1,3 +1,4 @@
 .env
 Models
 __pycache__
+*.txt
