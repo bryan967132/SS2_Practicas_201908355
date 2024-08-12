@@ -15,7 +15,7 @@ class Delete:
 
         message = ''
         if not 'Flight' in rows:
-            message += '  Tabla Flight No Existe'
+            message += '\n  Tabla Flight No Existe'
         if not 'Passenger' in rows:
             message += '\n  Tabla Passenger No Existe'
         if not 'Airport' in rows:
@@ -29,12 +29,13 @@ class Delete:
         if not 'Status' in rows:
             message += '\n  Tabla Status No Existe'
 
-        print('  Eliminación de Modelo')
         if message == '':
             cursor.execute(open('./Scripts/DeleteModel.sql', encoding = 'utf-8').read())
             cursor.commit()
-            print(f'{Colors.GREEN.value}  Tabla Flight Eliminada\n  Tabla Passenger Eliminada\n  Tabla Airport Eliminada\n  Tabla Country Eliminada\n  Tabla Continent Eliminada\n  Tabla Pilot Eliminada\n  Tabla Status Eliminada\n{Colors.WHITE.value}')
+            message = f'{Colors.GREEN.value}\n  Tabla Flight Eliminada\n  Tabla Passenger Eliminada\n  Tabla Airport Eliminada\n  Tabla Country Eliminada\n  Tabla Continent Eliminada\n  Tabla Pilot Eliminada\n  Tabla Status Eliminada{Colors.WHITE.value}'
         else:
-            print(f'{Colors.RED.value}{message}{Colors.WHITE.value}')
+            message = f'{Colors.RED.value}{message}{Colors.WHITE.value}'
 
         self.connection.close()
+
+        return '\n  Eliminación de Modelo' + message
